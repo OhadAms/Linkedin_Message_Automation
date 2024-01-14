@@ -2,8 +2,8 @@ from deep_translator import GoogleTranslator
 import linkedinFunctions as lf
 
 # Our original and finalized .xlsx Data Frame target file paths.
-originalXlsxFilePath = r"Path to your original working usernames .xlsx file"
-monitoringTableTargetXlsxFilePath = r"Path to the folder you want your summarized data to be saved in"
+originalXlsxFilePath = r"FolderLocation\testFile.xlsx"
+monitoringTableTargetXlsxFilePath = r"FolderLocation\testFileUpdated.xlsx"
 
 try:
     # Get the driver object from the point of after the initial login.
