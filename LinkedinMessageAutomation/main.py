@@ -21,7 +21,10 @@ try:
     nextMessagingRoundInSeconds = 36000  # 10 hours
     template = "היי "
     messageBody = ",זה הטקסט שאני ארשום פה לכולם! רציתי לספר לך שזה עובד!\n"
-    while i <= len(df["Name"]):
+    
+    # Our exit key to stop the program while its working is 'ctrl+q' - you can change the 'exitKey' as you wish.
+    exitKey = 'ctrl+q'
+    while i <= len(df["Name"]) and not lf.checkExitProgram(exitKey):
         if df["Status"][i] != "Approached":
             # Checking if the original .xlsx file current entrance has been 'Approached', if so - we don't sent the message again and thus don't enter the if statement.
             if lf.checkIfEntranceInOriginalXlsx(originalXlsxFilePath, i, "Approached", "B"):
@@ -52,14 +55,13 @@ try:
                 df.to_excel(monitoringTableTargetXlsxFilePath)
                 # 11. after 5 daily, set daily messages to 0 and wait 18 hours until next round.
                 if dailyMessagesSent == maxMessageRound:
-                    # Wait 14 hours until the next 5 messages.
-                    # time.sleep(18 * 60 * 60)
                     print("Next Sending round In:")
-                    # 14 hours = 50400 seconds
-                    lf.timeToNextMessagingRound(nextMessagingRoundInSeconds)
+                    # Timer Function.
+                    if lf.timeToNextMessagingRound(nextMessagingRoundInSeconds, exitKey):
+                        break
                     dailyMessagesSent = 0
 
-            # 12. add 1 to variable i (go to the next person in the dataFrame).
+        # 12. add 1 to variable i (go to the next person in the dataFrame).
         i = i + 1
 
     # Getting our amount of columns in the Data Frame.
