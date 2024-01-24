@@ -14,7 +14,7 @@
 
 ## Overview
 
-The LinkedIn Message Automation project is designed to simplify the process of sending personalized messages to your LinkedIn connections. It includes features for automated messaging, tracking message statuses, and managing contact data through Excel files.
+The LinkedIn Message Automation project is designed to simplify the process of sending personalized messages to your LinkedIn connections. It includes features for automated messaging, tracking message statuses, and managing contact data through Excel files With the ability to cleanly stop the program at any given time using a specific keystroke.
 
 ## Getting Started  
 
@@ -77,12 +77,14 @@ This project is licensed under the MIT License. See the [LICENSE](https://github
  
 10. #### Run the program.
 
-11. #### Go to your 'monitoringTableTargetXlsxFilePath' folder and open the .xlsx file created, the summarized information should be there as follows:
+11. #### Wait until the program is finished running or stop the program manually using a long keystroke on 'ctrl+q' (note that the program will finish the current messaging round and stop only after that round is finishd, or if you try to stop it manually when its waiting for the next messaging round), to stop it manually use a long press on 'ctrl+q' until the program stops.
+
+12. #### Go to your 'monitoringTableTargetXlsxFilePath' folder and open the .xlsx file created, the summarized information should be there as follows:
     ![summarizedXlsxFileShouldLookLikeThis](https://github.com/OhadAms/Linkedin_Message_Automation/blob/main/ReadMeImages/summarizedXlsxFileShouldLookLikeThis.JPG)
    
-12. #### If you want to add more Usernames to the file after you ran the program once, just add them to the end of the original .xlsx file and run the program again.
+13. #### If you want to add more Usernames to the file after you ran the program once, just add them to the end of the original .xlsx file and run the program again.
 
-13. #### Happy Job Hunting!
+14. #### Happy Job Hunting!
 
 
 
