@@ -1,4 +1,5 @@
 import sys
+import keyboard
 import pandas as pd
 import openpyxl
 import os
@@ -13,10 +14,21 @@ from openpyxl.utils import get_column_letter
 from selenium.common.exceptions import NoSuchElementException, TimeoutException, NoSuchDriverException, \
     WebDriverException, ElementNotVisibleException, ElementNotInteractableException
 import string
-# from openpyxl.styles import Alignment
 
 
 def checkIfEntranceInOriginalXlsx(filePath, rowNumber, status, columnToUpdate):
+    """
+    Check if the status of a specified row in an Excel file matches a given status.
+
+    Parameters:
+    - filePath (str): Path to the Excel file.
+    - rowNumber (int): Row number to check.
+    - status (str): Status to compare.
+    - columnToUpdate (str): Column letter to check.
+
+    Returns:
+    bool: True if the status matches; False otherwise.
+    """
     try:
         wb = openpyxl.load_workbook(filePath)
         sheet = wb.active
@@ -32,6 +44,21 @@ def checkIfEntranceInOriginalXlsx(filePath, rowNumber, status, columnToUpdate):
 
 
 def updateOriginalXlsxFile(filePath, rowNumber, status, columnToUpdate):
+    """
+    Update the status of a specified row in an Excel file.
+
+    This function loads the Excel workbook, locates the specified cell using the provided row number
+    and column letter, and updates the cell value with the given status. The modified workbook is then saved.
+
+    Parameters:
+    - filePath (str): Path to the Excel file.
+    - rowNumber (int): Row number to update.
+    - status (str): New status to set.
+    - columnToUpdate (str): Column letter to update.
+
+    Returns:
+    None
+    """
     try:
         wb = openpyxl.load_workbook(filePath)
         sheet = wb.active
@@ -51,6 +78,19 @@ def updateOriginalXlsxFile(filePath, rowNumber, status, columnToUpdate):
 
 
 def createNameAndHyperLinkLists(xlsxFilePath):
+    """
+    Extract data from specified columns in an Excel file and create lists for further processing.
+
+    This function loads the Excel workbook, iterates through the rows in the active sheet, and extracts
+    information such as first names, last names, hyperlinks, statuses, and time approached. The extracted
+    data is then stored in separate lists.
+
+    Parameters:
+    - xlsxFilePath (str): Path to the Excel file.
+
+    Returns:
+    tuple: A tuple containing lists of first names, last names, hyperlinks, statuses, and time approached.
+    """
     try:
         wb = openpyxl.load_workbook(xlsxFilePath)
         ws = wb.active
@@ -88,6 +128,18 @@ def createNameAndHyperLinkLists(xlsxFilePath):
 
 
 def splitFirstNameAndLastName(name: str):
+    """
+    Split a full name into first and last names.
+
+    This function takes a full name as input and splits it into two parts: the first name and the last name.
+    If the full name contains only one part, the last name will be an empty string.
+
+    Parameters:
+    - name (str): Full name to be split.
+
+    Returns:
+    tuple: A tuple containing the first name and last name.
+    """
     # Split the name string to 2 parts.
     nameParts = name.split(" ", 1)
     firstName = nameParts[0]
@@ -97,6 +149,22 @@ def splitFirstNameAndLastName(name: str):
 
 
 def createDataFrame(firstNames, lastNames, nameLinks, statuses, timeApproachedList):
+    """
+    Create a pandas DataFrame from lists of individual data elements.
+
+    This function takes lists of first names, last names, LinkedIn links, statuses, and time approached
+    and creates a pandas DataFrame. The DataFrame is then printed to the console using tabulate library.
+
+    Parameters:
+    - firstNames (list): List of first names.
+    - lastNames (list): List of last names.
+    - nameLinks (list): List of LinkedIn links.
+    - statuses (list): List of statuses.
+    - timeApproachedList (list): List of time approached values.
+
+    Returns:
+    pandas.DataFrame: The created DataFrame.
+    """
     # Create initial data
     raw_data = {"Name": firstNames,
                 "lastName": lastNames,
@@ -114,6 +182,20 @@ def createDataFrame(firstNames, lastNames, nameLinks, statuses, timeApproachedLi
 
 
 def styleExportedXlsxFile(filePath, numOfColumns, width):
+    """
+    Style the exported Excel file by setting column widths.
+
+    This function loads the Excel workbook, sets the width of each column based on the specified width,
+    and then saves the modified workbook.
+
+    Parameters:
+    - filePath (str): Path to the Excel file.
+    - numOfColumns (int): Number of columns in the Excel file.
+    - width (int): Width to set for each column.
+
+    Returns:
+    None
+    """
     try:
         wb = openpyxl.load_workbook(filePath)
         ws = wb.active
@@ -132,10 +214,30 @@ def styleExportedXlsxFile(filePath, numOfColumns, width):
 
 
 def printDataFrame(df):
+    """
+    Print a pandas DataFrame to the console using tabulate.
+
+    This function takes a pandas DataFrame and prints it to the console using tabulate library.
+
+    Parameters:
+    - df (pandas.DataFrame): The DataFrame to be printed.
+
+    Returns:
+    None
+    """
     print(tabulate(df, headers='keys'))  # print the dataFrame
 
 
 def linkedInLogin():
+    """
+    Perform LinkedIn login using a WebDriver.
+
+    This function initializes a WebDriver, navigates to the LinkedIn login page, enters the provided
+    username and password, and logs into the LinkedIn account.
+
+    Returns:
+    selenium.webdriver.chrome.webdriver.WebDriver: The WebDriver object after successful login.
+    """
     driver = None
     try:
         driver = webdriver.Chrome()
@@ -180,6 +282,18 @@ def linkedInLogin():
 
 
 def openLink(driver, linkedInUrl):
+    """
+    Open a LinkedIn profile link using a WebDriver.
+
+    This function navigates the provided WebDriver to the specified LinkedIn profile URL.
+
+    Parameters:
+    - driver (selenium.webdriver.chrome.webdriver.WebDriver): The WebDriver object.
+    - linkedInUrl (str): The LinkedIn profile URL to be opened.
+
+    Returns:
+    None
+    """
     try:
         driver.get(linkedInUrl)
         time.sleep(3)
@@ -188,6 +302,18 @@ def openLink(driver, linkedInUrl):
 
 
 def openLinkedInUserMessageBox(driver):
+    """
+    Open the LinkedIn user message box using a WebDriver.
+
+    This function waits for the 'Message' button to become visible, then clicks on it to open the message box
+    for sending a message to a LinkedIn user.
+
+    Parameters:
+    - driver (selenium.webdriver.chrome.webdriver.WebDriver): The WebDriver object.
+
+    Returns:
+    None
+    """
     try:
         time.sleep(3)
         # Finding all the buttons on the person page
@@ -211,6 +337,17 @@ def openLinkedInUserMessageBox(driver):
 
 
 def clickMessageArea(driver):
+    """
+    Click on the message area of the LinkedIn user message box using a WebDriver.
+
+    This function waits for the message area to become visible, then clicks on it to set focus for entering a message.
+
+    Parameters:
+    - driver (selenium.webdriver.chrome.webdriver.WebDriver): The WebDriver object.
+
+    Returns:
+    None
+    """
     try:
         time.sleep(2)
         messageAreaMainDiv = driver.find_element(By.XPATH,
@@ -222,6 +359,18 @@ def clickMessageArea(driver):
 
 
 def findMessageParagraphAndEnterMessageTemplet(driver, message):
+    """
+    Find a paragraph in the LinkedIn user message box and enter the provided message using a WebDriver.
+
+    This function waits for paragraphs to be present on the page, then enters the provided message into the input field.
+
+    Parameters:
+    - driver (selenium.webdriver.chrome.webdriver.WebDriver): The WebDriver object.
+    - message (str): The message to be entered into the LinkedIn user message box.
+
+    Returns:
+    None
+    """
     try:
         # Wait for the paragraphs to be present on the page
         paragraphs = WebDriverWait(driver, 10).until(
@@ -239,6 +388,17 @@ def findMessageParagraphAndEnterMessageTemplet(driver, message):
 
 
 def sendMessage(driver):
+    """
+    Send a message in the LinkedIn user message box using a WebDriver.
+
+    This function finds the 'Send' button, clicks it to send the message, and then closes the chat window.
+
+    Parameters:
+    - driver (selenium.webdriver.chrome.webdriver.WebDriver): The WebDriver object.
+
+    Returns:
+    None
+    """
     try:
         time.sleep(2)
         # Find the 'Send' button.
@@ -263,12 +423,24 @@ def sendMessage(driver):
 
 
 def getCurrentTime():
+    """
+    Get the current time in the format HH:MM:SS.
+
+    Returns:
+    str: A string representing the current time.
+    """
     t = time.localtime()
     current_time = time.strftime("%H:%M:%S", t)
     return current_time
 
 
 def getDateAndTime():
+    """
+    Get the current date and time in the format dd/mm/YYYY HH:MM:SS.
+
+    Returns:
+    str: A string representing the current date and time.
+    """
     # datetime object containing current date and time
     now = datetime.now()
 
@@ -277,7 +449,17 @@ def getDateAndTime():
     return dtString
 
 
-def timeToNextMessagingRound(seconds):
+def timeToNextMessagingRound(seconds, exitKey):
+    """
+    Wait for a specified number of seconds, displaying a countdown, and check for an exit signal.
+
+    Args:
+    seconds (int): The duration to wait in seconds.
+    exitKey (str): The keyboard shortcut to check for an exit signal.
+
+    Returns:
+    bool: True if the exit signal is detected during the countdown, False otherwise.
+    """
     for i in range(seconds, 0, -1):
         hours, remainder = divmod(i, 3600)
         minutes, seconds = divmod(remainder, 60)
@@ -286,3 +468,22 @@ def timeToNextMessagingRound(seconds):
         sys.stdout.flush()
 
         time.sleep(1)
+        if checkExitProgram(exitKey):
+            return True
+    return False
+
+
+def checkExitProgram(exitKey):
+    """
+    Check if a specified keyboard shortcut is pressed, indicating a request to exit the program.
+
+    Args:
+    exitKey (str): The keyboard shortcut to check for an exit signal.
+
+    Returns:
+    bool: True if the exit signal is detected, False otherwise.
+    """
+    if keyboard.is_pressed(exitKey):
+        print(f"\nYou pressed {exitKey}. Exiting...")
+        return True
+    return False
